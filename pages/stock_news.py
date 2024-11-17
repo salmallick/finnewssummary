@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Ensure environment variables are loaded
 load_dotenv()
-FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY")
+FINNHUB_API_KEY = st.secrets["FINNHUB_API_KEY"]
 
 def fetch_finnhub_news(ticker: str, days_back: int = 30) -> pd.DataFrame:
     """
