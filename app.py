@@ -13,18 +13,40 @@ from dotenv import load_dotenv
 
 def initialize_app():
     """Initialize the Streamlit app and load environment variables."""
-    load_dotenv()
     st.set_page_config(page_title="News Research Tool", page_icon="📈")
-    st.title("📈 News Research Tool 📈")
     
+    # Initialize session states
+    if 'research_urls' not in st.session_state:
+        st.session_state.research_urls = set()
+    if 'manual_urls' not in st.session_state:
+        st.session_state.manual_urls = [''] * 3
+        
+    st.title("📈 News Research Tool 📈")
+        
 def load_urls() -> List[str]:
     """Collect URLs from the user via sidebar."""
     st.sidebar.title("📰 News Article URLs")
+    
+    # Initialize session state for manual URLs if not exists
+    if 'manual_urls' not in st.session_state:
+        st.session_state.manual_urls = [''] * 3
+    
     urls = []
+    # Use session state to store manual URL inputs
     for i in range(3):
-        url = st.sidebar.text_input(f"URL {i + 1}", key=f"url_{i}")
-        if url:  # Only append non-empty URLs
+        url = st.sidebar.text_input(
+            f"URL {i + 1}", 
+            value=st.session_state.manual_urls[i],
+            key=f"url_input_{i}"
+        )
+        st.session_state.manual_urls[i] = url
+        if url:
             urls.append(url)
+    
+    # Get URLs from stock news page
+    if 'research_urls' in st.session_state:
+        urls.extend(list(st.session_state.research_urls))
+                
     return urls
 
 def process_urls(urls: List[str], status_placeholder) -> Optional[FAISS]:
