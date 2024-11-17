@@ -1,0 +1,5 @@
+# Ignore .env files
+.env
+
+# Ignore installed packages list
+installed_packages.txt
